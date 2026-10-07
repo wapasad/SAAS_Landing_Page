@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Admin | Database Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root, html[data-theme="dark"] {
+            --primary: #2563EB;
+            --primary-hover: #1D4ED8;
+            --secondary: #7C3AED;
+            --accent: #06B6D4;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --danger-hover: #DC2626;
+            
+            --bg-main: #0B1120;
+            --bg-surface: #1E293B;
+            --bg-card: rgba(30, 41, 59, 0.7);
+            --header-bg: rgba(15, 23, 42, 0.85);
+            --text-main: #F8FAFC;
+            --text-muted: #94A3B8;
+            --border-color: #334155;
+            --table-head-bg: rgba(15, 23, 42, 0.75);
+            --table-border: rgba(51, 65, 85, 0.5);
+            --input-bg: #0F172A;
+            --login-bg: radial-gradient(circle at 50% 30%, rgba(37, 99, 235, 0.12) 0%, rgba(11, 17, 32, 1) 70%);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+        }
+
+        html[data-theme="light"] {
+            --primary: #2563EB;
+            --primary-hover: #1D4ED8;
+            --secondary: #7C3AED;
+            --accent: #06B6D4;
+            --success: #059669;
+            --warning: #D97706;
+            --danger: #DC2626;
+            --danger-hover: #B91C1C;
+            
+            --bg-main: #F1F5F9;
+            --bg-surface: #FFFFFF;
+            --bg-card: rgba(255, 255, 255, 0.95);
+            --header-bg: rgba(255, 255, 255, 0.95);
+            --text-main: #0F172A;
+            --text-muted: #64748B;
+            --border-color: #CBD5E1;
+            --table-head-bg: #E2E8F0;
+            --table-border: #E2E8F0;
+            --input-bg: #F8FAFC;
+            --login-bg: radial-gradient(circle at 50% 30%, rgba(37, 99, 235, 0.08) 0%, #F1F5F9 70%);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+        }
+
+        body, .stat-card, .card-table, header, .login-card, table, th, td, input, select {
+            transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* -------------------------------------------
+           LOGIN SCREEN STYLES
+           ------------------------------------------- */
+        #login-view {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 1.5rem;
+            background: var(--login-bg);
+        }
+
+        .login-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 440px;
+            padding: 2.5rem 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+            text-align: center;
+            position: relative;
+        }
+
+        .login-icon {
+            width: 64px;
+            height: 64px;
+            background: rgba(37, 99, 235, 0.15);
+            color: #60A5FA;
+            border-radius: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 1.25rem;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .login-card h2 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin-bottom: 0.35rem;
+        }
+
+        .login-card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 1.75rem;
+        }
+
+        .login-group {
+            text-align: left;
+            margin-bottom: 1.2rem;
+        }
+
+        .login-group label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 0.4rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .login-group input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-main);
+            outline: none;
+            font-size: 0.95rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .login-group input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+        }
+
+        .login-error {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #FCA5A5;
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            margin-bottom: 1.25rem;
+            display: none;
+            text-align: left;
+        }
+
+        .login-hint {
+            margin-top: 1.25rem;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            background: rgba(255, 255, 255, 0.03);
+            padding: 0.6rem;
+            border-radius: 8px;
+            border: 1px dashed var(--border-color);
+        }
+
+        /* -------------------------------------------
+           DASHBOARD STYLES
+           ------------------------------------------- */
+        #dashboard-view {
+            display: none;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        header {
+            background: var(--header-bg);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-container {
+            max-width: 1380px;
+            margin: 0 auto;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo {
+            font-size: 1.35rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .logo i {
+            color: var(--primary);
+        }
+
+        .badge-admin {
+            background: rgba(37, 99, 235, 0.15);
+            color: #60A5FA;
+            font-size: 0.75rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 9999px;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            font-weight: 600;
+            letter-spacing: 0.05em;
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.15rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+        }
+        .btn-primary:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+        }
+        .btn-outline:hover {
+            background: var(--bg-surface);
+            border-color: #64748B;
+        }
+
+        .btn-success {
+            background: #059669;
+            color: white;
+        }
+        .btn-success:hover {
+            background: #047857;
+        }
+
+        .btn-danger-outline {
+            background: rgba(239, 68, 68, 0.1);
+            color: #F87171;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        .btn-danger-outline:hover {
+            background: #EF4444;
+            color: #fff;
+        }
+
+        /* Container */
+        main {
+            flex: 1;
+            max-width: 1380px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        .page-title {
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .page-title h1 {
+            font-size: 1.75rem;
+            font-weight: 800;
+        }
+
+        .page-title p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-top: 0.25rem;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        .stat-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .stat-icon.revenue { background: rgba(16, 185, 129, 0.15); color: #34D399; }
+        .stat-icon.orders { background: rgba(37, 99, 235, 0.15); color: #60A5FA; }
+        .stat-icon.popular { background: rgba(245, 158, 11, 0.15); color: #FBBF24; }
+        .stat-icon.contacts { background: rgba(124, 58, 237, 0.15); color: #A78BFA; }
+
+        .stat-info h3 {
+            font-size: 1.6rem;
+            font-weight: 700;
+        }
+
+        .stat-info span {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        /* Controls */
+        .controls-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 0.5rem;
+            background: rgba(15, 23, 42, 0.6);
+            padding: 0.3rem;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 0.55rem 1.25rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.55rem 0.95rem;
+            gap: 0.6rem;
+            min-width: 280px;
+        }
+
+        .search-box input {
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            outline: none;
+            width: 100%;
+            font-size: 0.9rem;
+        }
+
+        .search-box i {
+            color: var(--text-muted);
+        }
+
+        /* Table Card */
+        .card-table {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        th {
+            background: var(--table-head-bg);
+            color: var(--text-muted);
+            font-weight: 600;
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--border-color);
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--table-border);
+            vertical-align: middle;
+            color: var(--text-main);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .order-badge {
+            font-family: monospace;
+            background: rgba(59, 130, 246, 0.15);
+            color: #93C5FD;
+            padding: 0.25rem 0.55rem;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .plan-tag {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .plan-Starter { background: rgba(56, 189, 248, 0.15); color: #38BDF8; }
+        .plan-Professional { background: rgba(168, 85, 247, 0.15); color: #C084FC; }
+        .plan-Enterprise { background: rgba(234, 179, 8, 0.15); color: #FACC15; }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: rgba(16, 185, 129, 0.15);
+            color: #34D399;
+        }
+
+        /* Action Buttons */
+        .btn-delete {
+            background: rgba(239, 68, 68, 0.15);
+            color: #F87171;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 6px;
+            padding: 0.4rem 0.75rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .btn-delete:hover {
+            background: #EF4444;
+            color: #fff;
+            transform: scale(1.04);
+            box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-muted);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.4;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(6px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.25s ease;
+            padding: 1.5rem;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            width: 100%;
+            max-width: 520px;
+            padding: 2rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .modal-card h2 {
+            font-size: 1.35rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-card p {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-row {
+            margin-bottom: 1rem;
+        }
+
+        .form-row label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 0.35rem;
+            text-transform: uppercase;
+        }
+
+        .form-row input, .form-row select {
+            width: 100%;
+            padding: 0.65rem 0.9rem;
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-main);
+            outline: none;
+            font-size: 0.9rem;
+        }
+
+        .form-row input:focus, .form-row select:focus {
+            border-color: var(--primary);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1.25rem;
+            right: 1.25rem;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==============================================
+         1. LOGIN VIEW
+         ============================================== -->
+    <div id="login-view">
+        <div class="login-card">
+            <button type="button" onclick="toggleAdminTheme()" class="btn btn-outline" style="position: absolute; top: 1.25rem; right: 1.25rem; padding: 0.35rem 0.65rem; border-radius: 9999px; font-size: 0.85rem;" title="Switch Theme">
+                <i class="theme-toggle-icon-mini fa-solid fa-sun"></i>
+            </button>
+            <div class="login-icon">
+                <i class="fa-solid fa-lock"></i>
+            </div>
+            <h2>Admin Portal</h2>
+            <p>Enter your password to access and manage the database.</p>
+
+            <div id="login-error-msg" class="login-error"></div>
+
+            <form id="admin-login-form" onsubmit="handleLogin(event)">
+                <div class="login-group">
+                    <label for="login-username">Username</label>
+                    <input type="text" id="login-username" value="admin" required autocomplete="username">
+                </div>
+
+                <div class="login-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" placeholder="Enter password" required autocomplete="current-password">
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="login-submit-btn" style="width: 100%; padding: 0.85rem; font-size: 1rem; border-radius: 10px; margin-top: 0.5rem;">
+                    <i class="fa-solid fa-right-to-bracket"></i> Login to Database
+                </button>
+
+                <div class="login-hint">
+                    <i class="fa-solid fa-key" style="color: var(--primary);"></i> Default credentials: <strong>admin</strong> / <strong>admin123</strong>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==============================================
+         2. AUTHENTICATED DASHBOARD VIEW
+         ============================================== -->
+    <div id="dashboard-view">
+        <!-- Header -->
+        <header>
+            <div class="header-container">
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <a href="/" class="logo">
+                        <i class="fa-solid fa-cube"></i> Nexus
+                    </a>
+                    <span class="badge-admin">DATABASE ADMIN</span>
+                </div>
+                
+                <div class="nav-actions">
+                    <a href="/" class="btn btn-outline" title="Return to website">
+                        <i class="fa-solid fa-arrow-left"></i> View Website
+                    </a>
+                    <button type="button" id="theme-toggle-btn" onclick="toggleAdminTheme()" class="btn btn-outline" title="Switch Theme">
+                        <i id="theme-toggle-icon" class="fa-solid fa-sun"></i> <span id="theme-toggle-text">Light Mode</span>
+                    </button>
+                    <a href="#" onclick="exportCsv()" class="btn btn-success" title="Download Excel/CSV of orders">
+                        <i class="fa-solid fa-download"></i> Export CSV
+                    </a>
+                    <button class="btn btn-primary" onclick="openTestModal()">
+                        <i class="fa-solid fa-plus"></i> New Test Order
+                    </button>
+                    <button class="btn btn-danger-outline" onclick="handleLogout()" title="Log out from database">
+                        <i class="fa-solid fa-power-off"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main>
+            <div class="page-title">
+                <div>
+                    <h1>Customer Purchases & Leads Database</h1>
+                    <p>Live SQLite database (nexus.db). You can inspect and delete any records below.</p>
+                </div>
+                <div style="color: var(--text-muted); font-size: 0.85rem;">
+                    <i class="fa-solid fa-shield-halved" style="color: #10B981;"></i> Authenticated Admin Session
+                </div>
+            </div>
+
+            <!-- Metric Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon revenue"><i class="fa-solid fa-dollar-sign"></i></div>
+                    <div class="stat-info">
+                        <h3 id="stat-revenue">$0.00</h3>
+                        <span>Total Sales Revenue</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon orders"><i class="fa-solid fa-cart-shopping"></i></div>
+                    <div class="stat-info">
+                        <h3 id="stat-orders">0</h3>
+                        <span>Purchased Orders</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon popular"><i class="fa-solid fa-crown"></i></div>
+                    <div class="stat-info">
+                        <h3 id="stat-popular">-</h3>
+                        <span>Top Selling Plan</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon contacts"><i class="fa-solid fa-envelope-open-text"></i></div>
+                    <div class="stat-info">
+                        <h3 id="stat-contacts">0</h3>
+                        <span>Contact Inquiries</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <div class="controls-bar">
+                <div class="tab-buttons">
+                    <button class="tab-btn active" id="tab-orders-btn" onclick="switchTab('orders')">
+                        <i class="fa-solid fa-bag-shopping"></i> Customer Purchases (<span id="orders-count">0</span>)
+                    </button>
+                    <button class="tab-btn" id="tab-contacts-btn" onclick="switchTab('contacts')">
+                        <i class="fa-solid fa-comments"></i> Inquiries (<span id="contacts-count">0</span>)
+                    </button>
+                </div>
+
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="search-input" placeholder="Search customer, email, plan..." oninput="handleSearch()">
+                </div>
+            </div>
+
+            <!-- Orders Table View -->
+            <div id="orders-view" class="card-table">
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Date & Time</th>
+                                <th>Customer Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Company</th>
+                                <th>Plan</th>
+                                <th>Billing</th>
+                                <th>Amount</th>
+                                <th>Payment</th>
+                                <th>Status</th>
+                                <th style="text-align: center;">Action (Delete)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="orders-table-body">
+                            <!-- Loaded dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Contacts Table View -->
+            <div id="contacts-view" class="card-table" style="display: none;">
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#ID</th>
+                                <th>Date</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Subject</th>
+                                <th>Message</th>
+                                <th style="text-align: center;">Action (Delete)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="contacts-table-body">
+                            <!-- Loaded dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Test Order Modal -->
+    <div class="modal-overlay" id="test-modal">
+        <div class="modal-card">
+            <button class="modal-close" onclick="closeTestModal()"><i class="fa-solid fa-xmark"></i></button>
+            <h2>Add Test Customer Purchase</h2>
+            <p>Insert an order directly into the database to verify live sync.</p>
+            
+            <form id="test-order-form" onsubmit="submitTestOrder(event)">
+                <div class="form-row">
+                    <label>Customer Name *</label>
+                    <input type="text" id="t-name" required placeholder="e.g. Tanvir Hasan">
+                </div>
+                <div class="form-row">
+                    <label>Email Address *</label>
+                    <input type="email" id="t-email" required placeholder="tanvir@example.com">
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                    <div class="form-row">
+                        <label>Phone</label>
+                        <input type="text" id="t-phone" placeholder="+8801...">
+                    </div>
+                    <div class="form-row">
+                        <label>Company</label>
+                        <input type="text" id="t-company" placeholder="Acme Inc">
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                    <div class="form-row">
+                        <label>Plan</label>
+                        <select id="t-plan" onchange="updateTestAmount()">
+                            <option value="Starter">Starter ($29/mo)</option>
+                            <option value="Professional" selected>Professional ($79/mo)</option>
+                            <option value="Enterprise">Enterprise ($199/mo)</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <label>Billing Cycle</label>
+                        <select id="t-cycle" onchange="updateTestAmount()">
+                            <option value="Monthly" selected>Monthly</option>
+                            <option value="Yearly">Yearly (20% Off)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <label>Amount ($ USD)</label>
+                    <input type="number" id="t-amount" value="79" step="0.01" required>
+                </div>
+                <div style="margin-top: 1.5rem; display: flex; justify-content: flex-end; gap: 0.75rem;">
+                    <button type="button" class="btn btn-outline" onclick="closeTestModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="t-submit-btn">Save to Database</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = (window.location.protocol === 'file:' || !window.location.port) ? 'http://localhost:5000' : '';
+        let allOrders = [];
+        let allContacts = [];
+        let currentTab = 'orders';
+
+        function getAuthHeaders() {
+            const token = localStorage.getItem('nexus_admin_token') || '';
+            const headers = { 'Content-Type': 'application/json' };
+            if (token) {
+                headers['Authorization'] = 'Bearer ' + token;
+            }
+            return headers;
+        }
+
+        // ==========================================
+        // AUTHENTICATION LOGIC
+        // ==========================================
+        async function checkAuth() {
+            try {
+                const res = await fetch(API_BASE + '/api/admin/check', {
+                    headers: getAuthHeaders(),
+                    credentials: 'include'
+                });
+                const data = await res.json();
+                if (data.authenticated) {
+                    showDashboard();
+                    loadData();
+                } else {
+                    showLogin();
+                }
+            } catch (err) {
+                showLogin();
+            }
+        }
+
+        function showLogin() {
+            document.getElementById('login-view').style.display = 'flex';
+            document.getElementById('dashboard-view').style.display = 'none';
+        }
+
+        function showDashboard() {
+            document.getElementById('login-view').style.display = 'none';
+            document.getElementById('dashboard-view').style.display = 'flex';
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const btn = document.getElementById('login-submit-btn');
+            const errBox = document.getElementById('login-error-msg');
+            const user = document.getElementById('login-username').value.trim();
+            const pass = document.getElementById('login-password').value.trim();
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Verifying...';
+            errBox.style.display = 'none';
+
+            try {
+                const res = await fetch(API_BASE + '/api/admin/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ username: user, password: pass })
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    if (data.token) {
+                        localStorage.setItem('nexus_admin_token', data.token);
+                    }
+                    showDashboard();
+                    loadData();
+                } else {
+                    errBox.textContent = data.error || 'Login failed. Please check credentials.';
+                    errBox.style.display = 'block';
+                }
+            } catch (err) {
+                errBox.textContent = 'Connection error: ' + err.message + '. Ensure backend server is running.';
+                errBox.style.display = 'block';
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Login to Database';
+            }
+        }
+
+        async function handleLogout() {
+            try {
+                await fetch(API_BASE + '/api/admin/logout', {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    credentials: 'include'
+                });
+            } catch (err) {}
+            localStorage.removeItem('nexus_admin_token');
+            showLogin();
+            document.getElementById('login-password').value = '';
+        }
+
+        // ==========================================
+        // DATA LOAD & RENDERING
+        // ==========================================
+        async function loadData() {
+            try {
+                // Fetch Stats
+                const statsRes = await fetch(API_BASE + '/api/stats', {
+                    headers: getAuthHeaders(),
+                    credentials: 'include'
+                });
+                if (statsRes.status === 401) {
+                    showLogin();
+                    return;
+                }
+                const statsData = await statsRes.json();
+                if (statsData.success) {
+                    const s = statsData.stats;
+                    document.getElementById('stat-revenue').textContent = '$' + Number(s.total_revenue).toLocaleString(undefined, {minimumFractionDigits: 2});
+                    document.getElementById('stat-orders').textContent = s.total_orders;
+                    document.getElementById('stat-contacts').textContent = s.total_contacts;
+                    
+                    const plans = s.plan_distribution || {};
+                    let topPlan = '-';
+                    let maxCnt = 0;
+                    for (const [plan, cnt] of Object.entries(plans)) {
+                        if (cnt > maxCnt) { maxCnt = cnt; topPlan = plan; }
+                    }
+                    document.getElementById('stat-popular').textContent = topPlan;
+                }
+
+                // Fetch Orders
+                const ordersRes = await fetch(API_BASE + '/api/orders', {
+                    headers: getAuthHeaders(),
+                    credentials: 'include'
+                });
+                const ordersData = await ordersRes.json();
+                if (ordersData.success) {
+                    allOrders = ordersData.orders;
+                    document.getElementById('orders-count').textContent = allOrders.length;
+                    renderOrders(allOrders);
+                }
+
+                // Fetch Contacts
+                const contactsRes = await fetch(API_BASE + '/api/contacts', {
+                    headers: getAuthHeaders(),
+                    credentials: 'include'
+                });
+                const contactsData = await contactsRes.json();
+                if (contactsData.success) {
+                    allContacts = contactsData.contacts;
+                    document.getElementById('contacts-count').textContent = allContacts.length;
+                    renderContacts(allContacts);
+                }
+
+            } catch (err) {
+                console.error("Failed to fetch dashboard data:", err);
+            }
+        }
+
+        function renderOrders(orders) {
+            const tbody = document.getElementById('orders-table-body');
+            if (!orders || orders.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="12" class="empty-state"><i class="fa-solid fa-basket-shopping"></i><p>No customer purchase records found in the database.</p></td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = orders.map(o => `
+                <tr id="order-row-${o.id}">
+                    <td><span class="order-badge">${escapeHtml(o.order_number)}</span></td>
+                    <td style="color: var(--text-muted); font-size: 0.8rem; white-space: nowrap;">${formatDate(o.created_at)}</td>
+                    <td style="font-weight: 600;">${escapeHtml(o.customer_name)}</td>
+                    <td><a href="mailto:${escapeHtml(o.customer_email)}" style="color: #60A5FA;">${escapeHtml(o.customer_email)}</a></td>
+                    <td style="color: var(--text-muted); font-size: 0.85rem;">${escapeHtml(o.customer_phone || '-')}</td>
+                    <td style="color: var(--text-muted); font-size: 0.85rem;">${escapeHtml(o.company_name || '-')}</td>
+                    <td><span class="plan-tag plan-${o.plan_name}">${escapeHtml(o.plan_name)}</span></td>
+                    <td style="font-size: 0.8rem; color: var(--text-muted);">${escapeHtml(o.billing_cycle)}</td>
+                    <td style="font-weight: 700; color: #34D399;">$${Number(o.amount).toFixed(2)}</td>
+                    <td style="color: var(--text-muted); font-size: 0.85rem;">${escapeHtml(o.payment_method || 'Card')}</td>
+                    <td><span class="status-badge"><i class="fa-solid fa-circle-check"></i> ${escapeHtml(o.status)}</span></td>
+                    <td style="text-align: center;">
+                        <button class="btn-delete" onclick="deleteOrderRecord(${o.id}, '${escapeHtml(o.order_number)}')" title="Delete this order from database">
+                            <i class="fa-solid fa-trash-can"></i> Delete
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderContacts(contacts) {
+            const tbody = document.getElementById('contacts-table-body');
+            if (!contacts || contacts.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="empty-state"><i class="fa-solid fa-envelope"></i><p>No contact messages found.</p></td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = contacts.map(c => `
+                <tr id="contact-row-${c.id}">
+                    <td><span class="order-badge">#${c.id}</span></td>
+                    <td style="color: var(--text-muted); font-size: 0.8rem;">${formatDate(c.created_at)}</td>
+                    <td style="font-weight: 600;">${escapeHtml(c.name)}</td>
+                    <td><a href="mailto:${escapeHtml(c.email)}" style="color: #60A5FA;">${escapeHtml(c.email)}</a></td>
+                    <td style="font-weight: 500;">${escapeHtml(c.subject || '-')}</td>
+                    <td style="color: var(--text-muted); max-width: 300px;">${escapeHtml(c.message)}</td>
+                    <td style="text-align: center;">
+                        <button class="btn-delete" onclick="deleteContactRecord(${c.id})" title="Delete message">
+                            <i class="fa-solid fa-trash-can"></i> Delete
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // ==========================================
+        // DELETE ACTIONS
+        // ==========================================
+        async function deleteOrderRecord(id, orderNumber) {
+            const confirmDelete = confirm(`আপনি কি নিশ্চিতভাবে অর্ডারটি ডিলিট করতে চান?\n\nঅর্ডার নম্বর: ${orderNumber}\nআইডি: ${id}\n\nএটি ডাটাবেস থেকে স্থায়ীভাবে মুছে যাবে।`);
+            if (!confirmDelete) return;
+
+            try {
+                const res = await fetch(API_BASE + `/api/orders/${id}`, {
+                    method: 'DELETE',
+                    headers: getAuthHeaders(),
+                    credentials: 'include'
+                });
+
+                const data = await res.json();
+                if (data.success) {
+                    await loadData();
+                } else {
+                    alert('ডিলিট করতে সমস্যা হয়েছে: ' + (data.error || 'অজানা ত্রুটি'));
+                }
+            } catch (err) {
+                alert('নেটওয়ার্ক এরর: ' + err.message);
+            }
+        }
+
+        async function deleteContactRecord(id) {
+            const confirmDelete = confirm(`আপনি কি নিশ্চিতভাবে এই মেসেজটি (#${id}) ডাটাবেস থেকে ডিলিট করতে চান?`);
+            if (!confirmDelete) return;
+
+            try {
+                const res = await fetch(API_BASE + `/api/contacts/${id}`, {
+                    method: 'DELETE',
+                    headers: getAuthHeaders(),
+                    credentials: 'include'
+                });
+
+                const data = await res.json();
+                if (data.success) {
+                    await loadData();
+                } else {
+                    alert('ডিলিট করতে সমস্যা হয়েছে: ' + (data.error || 'অজানা ত্রুটি'));
+                }
+            } catch (err) {
+                alert('নেটওয়ার্ক এরর: ' + err.message);
+            }
+        }
+
+        function switchTab(tab) {
+            currentTab = tab;
+            document.getElementById('tab-orders-btn').classList.toggle('active', tab === 'orders');
+            document.getElementById('tab-contacts-btn').classList.toggle('active', tab === 'contacts');
+            document.getElementById('orders-view').style.display = tab === 'orders' ? 'block' : 'none';
+            document.getElementById('contacts-view').style.display = tab === 'contacts' ? 'block' : 'none';
+            handleSearch();
+        }
+
+        function handleSearch() {
+            const query = document.getElementById('search-input').value.toLowerCase().trim();
+            if (currentTab === 'orders') {
+                const filtered = allOrders.filter(o => 
+                    (o.customer_name && o.customer_name.toLowerCase().includes(query)) ||
+                    (o.customer_email && o.customer_email.toLowerCase().includes(query)) ||
+                    (o.order_number && o.order_number.toLowerCase().includes(query)) ||
+                    (o.plan_name && o.plan_name.toLowerCase().includes(query)) ||
+                    (o.company_name && o.company_name.toLowerCase().includes(query))
+                );
+                renderOrders(filtered);
+            } else {
+                const filtered = allContacts.filter(c =>
+                    (c.name && c.name.toLowerCase().includes(query)) ||
+                    (c.email && c.email.toLowerCase().includes(query)) ||
+                    (c.subject && c.subject.toLowerCase().includes(query)) ||
+                    (c.message && c.message.toLowerCase().includes(query))
+                );
+                renderContacts(filtered);
+            }
+        }
+
+        function exportCsv() {
+            window.location.href = API_BASE + '/api/export-orders-csv';
+        }
+
+        function openTestModal() {
+            document.getElementById('test-modal').classList.add('active');
+        }
+
+        function closeTestModal() {
+            document.getElementById('test-modal').classList.remove('active');
+        }
+
+        function updateTestAmount() {
+            const plan = document.getElementById('t-plan').value;
+            const cycle = document.getElementById('t-cycle').value;
+            const prices = {
+                'Starter': { 'Monthly': 29, 'Yearly': 23 },
+                'Professional': { 'Monthly': 79, 'Yearly': 63 },
+                'Enterprise': { 'Monthly': 199, 'Yearly': 159 }
+            };
+            const amt = prices[plan] ? prices[plan][cycle] : 79;
+            document.getElementById('t-amount').value = amt;
+        }
+
+        async function submitTestOrder(e) {
+            e.preventDefault();
+            const btn = document.getElementById('t-submit-btn');
+            btn.disabled = true;
+            btn.textContent = 'Saving...';
+
+            const payload = {
+                name: document.getElementById('t-name').value,
+                email: document.getElementById('t-email').value,
+                phone: document.getElementById('t-phone').value,
+                company: document.getElementById('t-company').value,
+                plan: document.getElementById('t-plan').value,
+                billing_cycle: document.getElementById('t-cycle').value,
+                amount: parseFloat(document.getElementById('t-amount').value),
+                payment_method: 'Credit Card',
+                notes: 'Created from Admin Dashboard'
+            };
+
+            try {
+                const res = await fetch(API_BASE + '/api/purchase', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (data.success) {
+                    closeTestModal();
+                    document.getElementById('test-order-form').reset();
+                    updateTestAmount();
+                    await loadData();
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (err) {
+                alert('Submission error: ' + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Save to Database';
+            }
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return '';
+            try {
+                const d = new Date(dateStr.replace(' ', 'T') + 'Z');
+                return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + 
+                       ' ' + d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+            } catch (e) {
+                return dateStr;
+            }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        // ==========================================
+        // THEME TOGGLE LOGIC
+        // ==========================================
+        function applyTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('nexus_admin_theme', theme);
+
+            const isLight = (theme === 'light');
+            const toggleIcon = document.getElementById('theme-toggle-icon');
+            const toggleText = document.getElementById('theme-toggle-text');
+            const miniIcons = document.querySelectorAll('.theme-toggle-icon-mini');
+
+            if (toggleIcon) {
+                toggleIcon.className = isLight ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+            }
+            if (toggleText) {
+                toggleText.textContent = isLight ? 'Dark Mode' : 'Light Mode';
+            }
+            miniIcons.forEach(icon => {
+                icon.className = 'theme-toggle-icon-mini ' + (isLight ? 'fa-solid fa-moon' : 'fa-solid fa-sun');
+            });
+        }
+
+        function toggleAdminTheme() {
+            const current = document.documentElement.getAttribute('data-theme') || 'dark';
+            const nextTheme = (current === 'light') ? 'dark' : 'light';
+            applyTheme(nextTheme);
+        }
+
+        // Initialize Theme immediately
+        const savedTheme = localStorage.getItem('nexus_admin_theme') || 'dark';
+        applyTheme(savedTheme);
+
+        // Initialize Authentication on Load
+        checkAuth();
+    </script>
+</body>
+</html>
