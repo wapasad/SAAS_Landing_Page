@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+*.db
+.env
+.venv/
+.git/
+Ebook/
+Github_Asad/
+MULTI_CALCULATOR/
+Python_Hub/
+marketplace_monitor_bot/
+run_server.bat
+manage_database.py

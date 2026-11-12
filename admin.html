@@ -710,7 +710,7 @@
             <div class="page-title">
                 <div>
                     <h1>Customer Purchases & Leads Database</h1>
-                    <p>Live SQLite database (nexus.db). You can inspect and delete any records below.</p>
+                    <p id="db-mode-subtitle">Live SQLite database (nexus.db). You can inspect and delete any records below.</p>
                 </div>
                 <div style="color: var(--text-muted); font-size: 0.85rem;">
                     <i class="fa-solid fa-shield-halved" style="color: #10B981;"></i> Authenticated Admin Session
@@ -877,7 +877,7 @@
     </div>
 
     <script>
-        const API_BASE = (window.location.protocol === 'file:' || !window.location.port) ? 'http://localhost:5000' : '';
+        const API_BASE = window.location.protocol === 'file:' ? 'http://localhost:5000' : '';
         let allOrders = [];
         let allContacts = [];
         let currentTab = 'orders';
@@ -991,6 +991,10 @@
                 }
                 const statsData = await statsRes.json();
                 if (statsData.success) {
+                    const subtitleEl = document.getElementById('db-mode-subtitle');
+                    if (subtitleEl && statsData.demo_mode) {
+                        subtitleEl.textContent = 'Demo Mode active (ephemeral /tmp/nexus.db with sample data). Changes reset on serverless cold start.';
+                    }
                     const s = statsData.stats;
                     document.getElementById('stat-revenue').textContent = '$' + Number(s.total_revenue).toLocaleString(undefined, {minimumFractionDigits: 2});
                     document.getElementById('stat-orders').textContent = s.total_orders;

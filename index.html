@@ -2481,7 +2481,7 @@
                     submitBtn.classList.add('btn-loading');
                     submitBtn.disabled = true;
                     const subject = document.getElementById('subject').value.trim() || 'Website enquiry';
-                    const API_BASE_URL = (window.location.protocol === 'file:' || !window.location.port) ? 'http://localhost:5000' : '';
+                    const API_BASE_URL = window.location.protocol === 'file:' ? 'http://localhost:5000' : '';
                     const rawEndpoint = contactForm.dataset.endpoint;
                     const endpoint = (rawEndpoint && rawEndpoint.startsWith('/')) ? (API_BASE_URL + rawEndpoint) : rawEndpoint;
 
@@ -2635,7 +2635,7 @@
                     purchaseSubmitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Storing Order in Database...';
                     errBox.style.display = 'none';
 
-                    const API_BASE_URL = (window.location.protocol === 'file:' || !window.location.port) ? 'http://localhost:5000' : '';
+                    const API_BASE_URL = window.location.protocol === 'file:' ? 'http://localhost:5000' : '';
 
                     try {
                         const response = await fetch(API_BASE_URL + '/api/purchase', {

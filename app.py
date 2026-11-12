@@ -8,7 +8,7 @@ import io
 from flask import Flask, request, jsonify, send_file, render_template_string, Response, session
 from database import (
     init_db, save_order, get_all_orders, delete_order,
-    save_contact, get_all_contacts, delete_contact, get_stats
+    save_contact, get_all_contacts, delete_contact, get_stats, is_demo_mode
 )
 
 app = Flask(__name__, static_folder='.', static_url_path='')
@@ -18,7 +18,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 # Admin credentials
 ADMIN_USERNAME = os.environ.get('ADMIN_USERNAME', 'admin')
 ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'admin123')
-ADMIN_TOKEN = "nexus_admin_secure_token_key"
+ADMIN_TOKEN = os.environ.get('ADMIN_TOKEN', 'nexus_admin_secure_token_key')
 
 def is_admin_authenticated():
     """Verify if user is authenticated via session or Bearer token."""
@@ -31,8 +31,11 @@ def is_admin_authenticated():
             return True
     return False
 
-# Initialize database on startup
-init_db()
+# Initialize database on startup (non-fatal on import so static routes stay up)
+try:
+    init_db()
+except Exception as exc:
+    print(f"Warning: initial database setup deferred: {exc}")
 
 @app.after_request
 def add_cors_headers(response):
@@ -266,6 +269,7 @@ def api_stats():
     stats = get_stats()
     return jsonify({
         'success': True,
+        'demo_mode': is_demo_mode(),
         'stats': stats
     })
 
